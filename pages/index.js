@@ -3,8 +3,12 @@ import Canvas from '../components/Canvas'
 import Timeline from '../components/Timeline'
 import { getAllVideosQuery } from '../graphql/client/queries/videos'
 
+const frameSize = 120;
+
 const Home = ({ videos }) => {
-    const [timelineVideos, setTimelineVideos] = useState([])
+    const [timelineVideos, setTimelineVideos] = useState([]);
+    const [imagePreview, setImagePreview] = useState('');
+    const [imagePreviewId, setImagePreviewId] = useState(null);
 
     const addToTimeline = (video) => {
         if (
@@ -15,8 +19,25 @@ const Home = ({ videos }) => {
             return
         }
 
-        setTimelineVideos([...timelineVideos, video])
+        setFirstScene(video);
+        setTimelineVideos([...timelineVideos, video]);
     }
+
+    const setFirstScene = (video) => {
+        setImagePreview(`/${video.fileName}/preview-1.png`);
+    };
+
+    const handleSetImagePreview = (event, index) => {
+        setImagePreviewId(index);
+        setImagePreview(`/${timelineVideos[0].fileName}/preview-${index}.png`);
+    };
+
+    const setPreviewByLinePosition = (position) => {
+        if (timelineVideos[0]) {
+            const index = Math.floor(position / frameSize) + 1;
+            setImagePreview(`/${timelineVideos[0].fileName}/preview-${index}.png`);
+        }
+    };
 
     return (
         <React.Fragment>
@@ -134,14 +155,20 @@ const Home = ({ videos }) => {
                         </div>
 
                         <div className="w-full md:w-8/12 px-5 py-12">
-                            <Canvas />
+                            <Canvas preview={imagePreview} />
                         </div>
 
                         <div className="w-full md:w-2/12 px-5 py-12 bg-white border-l border-gray-200"></div>
                     </div>
 
                     <div className="w-full bg-white h-full md:h-4/10 border-t border-gray-200 shadow">
-                        <Timeline videos={timelineVideos} />
+                        <Timeline
+                          frameSize={frameSize}
+                          imagePreviewId={imagePreviewId}
+                          handleSetImagePreview={handleSetImagePreview}
+                          videos={timelineVideos}
+                          setPreviewByLinePosition={setPreviewByLinePosition}
+                        />
                     </div>
                 </div>
             </div>

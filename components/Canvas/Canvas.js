@@ -1,9 +1,17 @@
-const Canvas = ({ width = '1280', height = '720' }) => {
+const Canvas = ({ width = '1280', height = '720', preview }) => {
     return (
         <div
-            style={{ width, height }}
+            style={{
+              width,
+              height,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center'
+            }}
             className="rounded-lg shadow-lg bg-white h-full mx-auto"
-        ></div>
+        >
+            <img src={preview}/>
+        </div>
     )
 }
 
