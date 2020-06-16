@@ -26,7 +26,8 @@
     "react-dom": "^16.13.1",
     "react-draggable": "^4.4.3",
     "rimraf": "^3.0.2",
-    "urql": "^1.9.8"
+    "urql": "^1.9.8",
+    "yarn": "^1.22.4"
   },
   "devDependencies": {
     "autoprefixer": "^9.8.0",
@@ -39,5 +40,13 @@
   "main": "next.config.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/X-COM-TECH/preview_test_project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/X-COM-TECH/preview_test_project/issues"
+  },
+  "homepage": "https://github.com/X-COM-TECH/preview_test_project#readme"
 }

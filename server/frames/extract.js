@@ -53,7 +53,7 @@ const extractVideoFrames = async () => {
             input: Path.resolve(__dirname, `./videos/${video}`),
             output: Path.resolve(
                 __dirname,
-                Path.resolve(videoFolderPath, 'preview-%d.png')
+                Path.resolve(videoFolderPath, 'frames_%d.png')
             ),
             fps: 10,
         })

@@ -1,0 +1,1 @@
+{"ast":null,"code":"export { default } from './Canvas';","map":{"version":3,"sources":["/Users/hju/Documents/Projects/project_on_git_for_developers/preview_test_project/components/Canvas/index.js"],"names":["default"],"mappings":"AAAA,SAASA,OAAT,QAAwB,UAAxB","sourcesContent":["export { default } from './Canvas'\n"]},"metadata":{},"sourceType":"module"}
