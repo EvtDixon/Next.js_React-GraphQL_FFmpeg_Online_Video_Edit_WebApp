@@ -24,18 +24,18 @@ const Home = ({ videos }) => {
     }
 
     const setFirstScene = (video) => {
-        setImagePreview(`/${video.fileName}/preview-1.png`);
+        setImagePreview(`/${video.fileName}/frames_1.png`);
     };
 
     const handleSetImagePreview = (event, index) => {
         setImagePreviewId(index);
-        setImagePreview(`/${timelineVideos[0].fileName}/preview-${index}.png`);
+        setImagePreview(`/${timelineVideos[0].fileName}/frames_${index}.png`);
     };
 
     const setPreviewByLinePosition = (position) => {
         if (timelineVideos[0]) {
             const index = Math.floor(position / frameSize) + 1;
-            setImagePreview(`/${timelineVideos[0].fileName}/preview-${index}.png`);
+            setImagePreview(`/${timelineVideos[0].fileName}/frames_${index}.png`);
         }
     };
 
@@ -148,7 +148,7 @@ const Home = ({ videos }) => {
                                     onClick={() => addToTimeline(video)}
                                     key={video.fileName}
                                     alt={video.fileName}
-                                    src={`/${video.fileName}/preview-1.png`}
+                                    src={`/${video.fileName}/frames_1.png`}
                                     className="w-full cursor-pointer rounded-lg shadow mt-5"
                                 />
                             ))}

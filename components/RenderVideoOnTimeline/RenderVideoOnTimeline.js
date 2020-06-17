@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 const RenderVideoOnTimeline = ({ video, handleSetImagePreview }) => {
     const previewImages = Array(video.framesCount)
         .fill(0)
-        .map((_, index) => `/${video.fileName}/preview-${index + 1}.png`)
+        .map((_, index) => `/${video.fileName}/frames_${index + 1}.png`)
 
     return (
         <Fragment>
