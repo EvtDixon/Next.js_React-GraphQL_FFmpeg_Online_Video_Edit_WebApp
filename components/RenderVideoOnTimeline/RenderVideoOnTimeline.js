@@ -1,23 +1,35 @@
 import { Fragment } from 'react'
 
-const RenderVideoOnTimeline = ({ video, handleSetImagePreview }) => {
+const RenderVideoOnTimeline = ({ video, handleSetImagePreview, frameSize }) => {
     const previewImages = Array(video.framesCount)
         .fill(0)
-        .map((_, index) => `/${video.fileName}/preview-${index + 1}.png`)
+        .map((_, index) => `/frames/${video.fileName}/preview-${index + 1}.png`)
 
     return (
         <Fragment>
             {previewImages.map((previewImage, index) => (
-                <img
+              <div className='timeline-frame' key={previewImage} style={{ position: 'relative' }}>
+                  {
+                      index === 0 && <span style={timeLabels}>0s</span>
+                  }
+                  {
+                      (index + 1) % 10 === 0 && <span style={timeLabels}>{(index + 1) / 10}s</span>
+                  }
+                  <img
                     onClick={event => handleSetImagePreview(event, index + 1)}
-                    key={previewImage}
                     src={previewImage}
-                    style={{ width: '120px', flexShrink: 0 }}
+                    style={{ width: frameSize, flexShrink: 0, height: '100%' }}
                     className="w-full border-r border-gray-200"
-                />
+                  />
+              </div>
             ))}
         </Fragment>
     )
+}
+
+const timeLabels = {
+    position: 'absolute',
+    top: -24,
 }
 
 export default RenderVideoOnTimeline

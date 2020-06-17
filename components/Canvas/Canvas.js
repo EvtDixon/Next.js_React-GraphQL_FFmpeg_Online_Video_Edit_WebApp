@@ -1,4 +1,4 @@
-const Canvas = ({ width = '1280', height = '720', preview }) => {
+const Canvas = ({ width = '1280', height = '720', preview, setDuration, videoPlayer }) => {
     return (
         <div
             style={{
@@ -10,7 +10,9 @@ const Canvas = ({ width = '1280', height = '720', preview }) => {
             }}
             className="rounded-lg shadow-lg bg-white h-full mx-auto"
         >
-            <img src={preview}/>
+            <video onLoadedMetadata={e => {
+              setDuration(e.target.duration)
+            }} ref={videoPlayer} src={preview[0] ? `/videos/${preview[0].fileName }.mp4` : ''}/>
         </div>
     )
 }

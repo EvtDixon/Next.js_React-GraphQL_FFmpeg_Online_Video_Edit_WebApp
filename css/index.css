@@ -7,3 +7,11 @@
 
 .line-cursor::before {
 }
+
+/*.timeline-frame:nth-child() {*/
+/*    content: "7s";*/
+/*}*/
+
+.play-button:hover {
+    text-decoration: underline;
+}

@@ -33,7 +33,7 @@ app.prepare().then(() => {
      * can load preview images when
      * then browser requests.
      */
-    server.use(express.static('server/frames/frames'))
+    server.use(express.static('server/frames'))
 
     /**
      *

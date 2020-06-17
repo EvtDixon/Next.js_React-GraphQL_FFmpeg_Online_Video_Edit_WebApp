@@ -1,16 +1,19 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Canvas from '../components/Canvas'
 import Timeline from '../components/Timeline'
 import { getAllVideosQuery } from '../graphql/client/queries/videos'
-
-const frameSize = 120;
+import { isEmpty } from 'lodash';
 
 const Home = ({ videos }) => {
     const [timelineVideos, setTimelineVideos] = useState([]);
     const [imagePreview, setImagePreview] = useState('');
     const [imagePreviewId, setImagePreviewId] = useState(null);
+    const [frameSize, setFrameSize] = useState(60);
+    const [duration, setDuration] = useState(0);
+    const videoPlayer = useRef(undefined);
 
     const addToTimeline = (video) => {
+        timelineVideos.splice(0, timelineVideos.length);
         if (
             timelineVideos.find(
                 (timelineVideo) => timelineVideo.fileName === video.fileName
@@ -24,18 +27,29 @@ const Home = ({ videos }) => {
     }
 
     const setFirstScene = (video) => {
-        setImagePreview(`/${video.fileName}/preview-1.png`);
+        setImagePreview(`/frames/${video.fileName}/preview-1.png`);
     };
 
     const handleSetImagePreview = (event, index) => {
         setImagePreviewId(index);
-        setImagePreview(`/${timelineVideos[0].fileName}/preview-${index}.png`);
+        setImagePreview(`/frames/${timelineVideos[0].fileName}/preview-${index}.png`);
     };
 
     const setPreviewByLinePosition = (position) => {
-        if (timelineVideos[0]) {
+        if (!isEmpty(timelineVideos)) {
             const index = Math.floor(position / frameSize) + 1;
-            setImagePreview(`/${timelineVideos[0].fileName}/preview-${index}.png`);
+            setImagePreviewId(index);
+            setImagePreview(`/frames/${timelineVideos[0].fileName}/preview-${index}.png`);
+        }
+    };
+
+    const togglePlayVideo = (enable) => {
+        if (!isEmpty(timelineVideos)) {
+            if (enable) {
+                videoPlayer.current.play();
+            } else {
+                videoPlayer.current.pause();
+            }
         }
     };
 
@@ -148,14 +162,14 @@ const Home = ({ videos }) => {
                                     onClick={() => addToTimeline(video)}
                                     key={video.fileName}
                                     alt={video.fileName}
-                                    src={`/${video.fileName}/preview-1.png`}
+                                    src={`/frames/${video.fileName}/preview-1.png`}
                                     className="w-full cursor-pointer rounded-lg shadow mt-5"
                                 />
                             ))}
                         </div>
 
                         <div className="w-full md:w-8/12 px-5 py-12">
-                            <Canvas preview={imagePreview} />
+                            <Canvas videoPlayer={videoPlayer} setDuration={setDuration} preview={timelineVideos} />
                         </div>
 
                         <div className="w-full md:w-2/12 px-5 py-12 bg-white border-l border-gray-200"></div>
@@ -163,11 +177,16 @@ const Home = ({ videos }) => {
 
                     <div className="w-full bg-white h-full md:h-4/10 border-t border-gray-200 shadow">
                         <Timeline
+                          duration={duration}
+                          videoPlayer={videoPlayer}
                           frameSize={frameSize}
                           imagePreviewId={imagePreviewId}
                           handleSetImagePreview={handleSetImagePreview}
                           videos={timelineVideos}
                           setPreviewByLinePosition={setPreviewByLinePosition}
+                          setFrameSize={setFrameSize}
+                          togglePlayVideo={togglePlayVideo}
+                          timelineVideos={timelineVideos}
                         />
                     </div>
                 </div>
