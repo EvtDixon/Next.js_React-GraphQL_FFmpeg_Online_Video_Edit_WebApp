@@ -1,13 +1,21 @@
-import { useState, Fragment } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 
 import LineCursor from '../LineCursor'
 import RenderVideoOnTimeline from '../RenderVideoOnTimeline'
 
-const Timeline = ({ videos }) => {
+const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, imagePreviewId, frameSize }) => {
     const [playing, setPlaying] = useState(false)
-    const [framesPerSecond, setFramesPerSecond] = useState(120)
-    const [timelineSeconds, setTimelineSeconds] = useState(120)
+    const [framesPerSecond, setFramesPerSecond] = useState(frameSize)
+    const [timelineSeconds, setTimelineSeconds] = useState(frameSize)
     const [lineCursorPosition, setLineCursorPosition] = useState(0)
+
+    useEffect(() => {
+        setPreviewByLinePosition(lineCursorPosition);
+    }, [lineCursorPosition]);
+
+    useEffect(() => {
+        setLineCursorPosition(imagePreviewId * frameSize);
+    }, [imagePreviewId]);
 
     const timelineWidth = framesPerSecond * timelineSeconds // 60 (default) frames per second, multiplied by 360 (default) seconds.
 
@@ -44,14 +52,14 @@ const Timeline = ({ videos }) => {
                 style={{ height: 'calc(100% - 4rem)' }}
                 className="relative w-full px-4 mt-4 overflow-scroll"
             >
-                <LineCursor position={lineCursorPosition} setPosition={setLineCursorPosition}  />
+                <LineCursor frameSize={frameSize} position={lineCursorPosition} setPosition={setLineCursorPosition} />
                 <div
                     className="bg-gray-100 h-12 rounded-lg flex"
                     style={{ width: timelineWidth }}
                 >
                     {videos.map((video) => (
                         <Fragment key={video.fileName}>
-                            <RenderVideoOnTimeline video={video} />
+                            <RenderVideoOnTimeline handleSetImagePreview={handleSetImagePreview} video={video} />
 
                             <span className="video-separator-marker"></span>
                         </Fragment>
