@@ -8,7 +8,7 @@ class VideosHandler {
      * This method fetches all videos listed in the
      * videos folder and returns them
      */
-    getAllVideos = () => {
+    getAllVideos() {
         return getAllVideos()
             .map((video) => video.slice(0, -4))
             .map((fileName) => ({
@@ -31,7 +31,7 @@ class VideosHandler {
      * This method resolves with a single video
      * from the video folder
      */
-    getSingleVideo = (args) => {
+    getSingleVideo(args) {
         return this.getAllVideos().find((video) => video.fileName == args.id)
     }
 }

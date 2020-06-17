@@ -17,6 +17,23 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
         setLineCursorPosition(imagePreviewId * frameSize);
     }, [imagePreviewId]);
 
+
+    const framesCount = videos.length && videos[0].framesCount;
+
+    useEffect(() => {
+        if (playing && framesCount) {
+            const nextIndex = (imagePreviewId || 0) + 1;
+            const nextPreviewId = nextIndex > framesCount ? 1 : nextIndex;
+
+            const timer = setTimeout(() =>
+                handleSetImagePreview(null, nextPreviewId)
+                , 1000 / 24);
+
+            return timer.clearTimeout;
+        }
+
+    }, [playing, imagePreviewId, framesCount]);
+
     const timelineWidth = framesPerSecond * timelineSeconds // 60 (default) frames per second, multiplied by 360 (default) seconds.
 
     return (
