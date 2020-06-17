@@ -8,44 +8,56 @@ import { msToTime } from '../../helpers/millisecondsToTime';
 const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, imagePreviewId, frameSize }) => {
   const [playing, setPlaying] = useState(false);
   const [timeline, setTimeline] = useState(0);
-  const [framesPerSecond, setFramesPerSecond] = useState(frameSize);
-  const [timelineSeconds, setTimelineSeconds] = useState(frameSize);
   const [lineCursorPosition, setLineCursorPosition] = useState(0);
+
+  const tick = 10;
 
   useEffect(() => {
     setPreviewByLinePosition(lineCursorPosition);
+    setTimeline(Math.floor(lineCursorPosition/ frameSize) * tick);
   }, [lineCursorPosition]);
 
   useEffect(() => {
-    setLineCursorPosition(imagePreviewId * frameSize);
-    setTimeline(imagePreviewId * (1000/60));
+    setLineCursorPosition(imagePreviewId === null ? 0 :(imagePreviewId - 1) * frameSize);
+    setTimeline(imagePreviewId * tick);
   }, [imagePreviewId]);
+
+  useEffect(() => {
+
+    setPreviewByLinePosition(0);
+    setTimeline(0);
+    setLineCursorPosition(0);
+    // setPlaying(false);
+  }, [videos]);
 
   const timerOn = videos.length && playing;
 
   useInterval(
     () => {
-      if (imagePreviewId + 1 === videos[0].framesCount) {
-        setPlaying(false)
+      if (imagePreviewId === videos[0].framesCount) {
+        setPlaying(false);
+        handleSetImagePreview(null, 1);
       } else {
-        setTimeline(timeline + (1000 / 60));
+        setTimeline(timeline + tick);
         handleSetImagePreview(null, imagePreviewId + 1);
       }
     },
-    timerOn ? (1000 / 60) : null
+    timerOn ? tick : null
   );
 
-  const timelineWidth = framesPerSecond * timelineSeconds; // 60 (default) frames per second, multiplied by 360 (default) seconds.
+  const timelineWidth = 10 * frameSize; // 60 (default) frames per second, multiplied by 360 (default) seconds.
+
+  const handlePlayClick = () => {
+    if (videos.length) {
+      setPlaying(!playing);
+    }
+  };
 
   return (
     <div className="w-full h-full">
       <div className="h-12 w-full border-b border-gray-200 flex justify-between items-center px-4">
         <span
-          onClick={() => {
-            if (videos.length) {
-              setPlaying(!playing);
-            }
-          }}
+          onClick={handlePlayClick}
           className="cursor-pointer text-brown-500 font-bold uppercase text-sm"
         >
           {playing ? 'pause' : 'play'}

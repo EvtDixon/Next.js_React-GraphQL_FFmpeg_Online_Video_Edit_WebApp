@@ -134,7 +134,7 @@ const Home = ({ videos }) => {
                             />
                         </svg>
                         <span className="text-sm">Templates</span>
-                    </div>                
+                    </div>
                 </div>
 
                 <div
