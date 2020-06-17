@@ -35,7 +35,12 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
     }, [playing, imagePreviewId, framesCount]);
 
     useEffect(() => {
-        if (playing) {
+        const elements = document.getElementsByClassName('line-cursor');
+        const line = elements[0];
+        const rect = line.getBoundingClientRect()
+        const isInView = rect.left >= 0 && rect.right <= document.documentElement.clientWidth - frameSize
+
+        if (playing && !isInView) {
             const videoContainer = document.getElementById('timeline-video-container');
             videoContainer.scroll((imagePreviewId - 1) * frameSize, 0);
         }
