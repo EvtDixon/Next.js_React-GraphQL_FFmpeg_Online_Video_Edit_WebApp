@@ -10,7 +10,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
   const [timeline, setTimeline] = useState(0);
   const [lineCursorPosition, setLineCursorPosition] = useState(0);
 
-  const tick = 10;
+  const tick = 85;
 
   useEffect(() => {
     setPreviewByLinePosition(lineCursorPosition);
