@@ -27,12 +27,19 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
 
             const timer = setTimeout(() =>
                 handleSetImagePreview(null, nextPreviewId)
-                , 1000 / 24);
+                , 1000 / framesPerSecond);
 
             return timer.clearTimeout;
         }
 
     }, [playing, imagePreviewId, framesCount]);
+
+    useEffect(() => {
+        if (playing) {
+            const videoContainer = document.getElementById('timeline-video-container');
+            videoContainer.scroll((imagePreviewId - 1) * frameSize, 0);
+        }
+    }, [imagePreviewId, playing]);
 
     const timelineWidth = framesPerSecond * timelineSeconds // 60 (default) frames per second, multiplied by 360 (default) seconds.
 
@@ -68,6 +75,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
             <div
                 style={{ height: 'calc(100% - 4rem)' }}
                 className="relative w-full px-4 mt-4 overflow-scroll"
+                id="timeline-video-container"
             >
                 <LineCursor frameSize={frameSize} position={lineCursorPosition} setPosition={setLineCursorPosition} />
                 <div
