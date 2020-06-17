@@ -41,7 +41,9 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
         const isInView = rect.left >= 0 && rect.right <= document.documentElement.clientWidth - frameSize
 
         if (playing && !isInView) {
-            const videoContainer = document.getElementById('timeline-video-container');
+            const videoContainerElements = document.getElementsByClassName('timeline-video-container');
+            const videoContainer = videoContainerElements[0];
+
             videoContainer.scroll((imagePreviewId - 1) * frameSize, 0);
         }
     }, [imagePreviewId, playing]);
@@ -79,8 +81,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
 
             <div
                 style={{ height: 'calc(100% - 4rem)' }}
-                className="relative w-full px-4 mt-4 overflow-scroll"
-                id="timeline-video-container"
+                className="relative w-full px-4 mt-4 overflow-scroll timeline-video-container"
             >
                 <LineCursor frameSize={frameSize} position={lineCursorPosition} setPosition={setLineCursorPosition} />
                 <div
