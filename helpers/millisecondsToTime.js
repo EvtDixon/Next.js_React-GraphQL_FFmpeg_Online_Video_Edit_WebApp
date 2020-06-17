@@ -1,5 +1,5 @@
 export const msToTime = (duration) => {
-  let milliseconds = parseInt((duration % 1000) / 100);
+  let milliseconds = parseInt((duration % 1000) / 10);
   let seconds = parseInt((duration / 1000) % 60);
   let minutes = parseInt((duration / (1000 * 60)) % 60);
   let hours = parseInt((duration / (1000 * 60 * 60)) % 24);

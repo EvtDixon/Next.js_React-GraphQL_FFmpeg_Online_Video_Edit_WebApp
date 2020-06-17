@@ -18,13 +18,21 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
 
   useEffect(() => {
     setLineCursorPosition(imagePreviewId * frameSize);
+    setTimeline(imagePreviewId * (1000/60));
   }, [imagePreviewId]);
+
+  const timerOn = videos.length && playing;
 
   useInterval(
     () => {
-      setTimeline(timeline + 10);
+      if (imagePreviewId + 1 === videos[0].framesCount) {
+        setPlaying(false)
+      } else {
+        setTimeline(timeline + (1000 / 60));
+        handleSetImagePreview(null, imagePreviewId + 1);
+      }
     },
-    playing ? 10 : null
+    timerOn ? (1000 / 60) : null
   );
 
   const timelineWidth = framesPerSecond * timelineSeconds; // 60 (default) frames per second, multiplied by 360 (default) seconds.
@@ -33,7 +41,11 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
     <div className="w-full h-full">
       <div className="h-12 w-full border-b border-gray-200 flex justify-between items-center px-4">
         <span
-          onClick={() => setPlaying(!playing)}
+          onClick={() => {
+            if (videos.length) {
+              setPlaying(!playing);
+            }
+          }}
           className="cursor-pointer text-brown-500 font-bold uppercase text-sm"
         >
           {playing ? 'pause' : 'play'}
@@ -67,6 +79,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
           frameSize={frameSize}
           position={lineCursorPosition}
           setPosition={setLineCursorPosition}
+          setTimeline={setTimeline}
         />
         <div
           className="bg-gray-100 h-12 rounded-lg flex"
