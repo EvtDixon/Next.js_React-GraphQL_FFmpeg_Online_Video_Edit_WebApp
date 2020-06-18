@@ -4,19 +4,19 @@ import Canvas from "../components/Canvas"
 import Timeline from "../components/Timeline"
 import { getAllVideosQuery } from "../graphql/client/queries/videos"
 
-const frameSize = 70
-
 const Home = ({ videos }) => {
   const [timelineVideos, setTimelineVideos] = useState([])
   const [imagePreview, setImagePreview] = useState("")
   const [imagePreviewId, setImagePreviewId] = useState(null)
+  const [frameSize, setFrameSize] = useState(70)
 
   const addToTimeline = (video) => {
-    if (
-      timelineVideos.find(
-        (timelineVideo) => timelineVideo.fileName === video.fileName
-      )
-    ) {
+    const selectedVideo = timelineVideos.find(
+      (timelineVideo) => timelineVideo.fileName === video.fileName
+    )
+
+    if (selectedVideo) {
+      setFrameSize(selectedVideo.framesCount)
       return
     }
 
