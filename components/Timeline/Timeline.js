@@ -18,21 +18,22 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
         setLineCursorPosition(imagePreviewId * frameSize);
     }, [imagePreviewId]);
 
-
     const framesCount = videos.length && videos[0].framesCount;
 
     useEffect(() => {
         if (playing && framesCount) {
             const nextIndex = (imagePreviewId || 0) + 1;
-            const nextPreviewId = nextIndex > framesCount ? 1 : nextIndex;
+            if (nextIndex <= framesCount) {
+                const timer = setTimeout(
+                    () => handleSetImagePreview(null, nextIndex),
+                    1000 / framesPerSecond
+                );
 
-            const timer = setTimeout(() =>
-                handleSetImagePreview(null, nextPreviewId)
-                , 1000 / framesPerSecond);
-
-            return timer.clearTimeout;
+                return timer.clearTimeout;
+            } else {
+                setPlaying(!playing);
+            }
         }
-
     }, [playing, imagePreviewId, framesCount]);
 
     useEffect(() => {
