@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, useRef, Fragment } from 'react'
 import { isEmpty } from 'lodash';
 
 import LineCursor from '../LineCursor'
@@ -31,6 +31,8 @@ const Timeline = ({
         seconds: '',
     });
 
+    const timelineWrapper = useRef(null);
+
     useEffect(() => {
         if (videoIsEnd) {
             setTime({
@@ -39,11 +41,16 @@ const Timeline = ({
             });
             setPlaying(false);
             videoPlayer.current.currentTime = 0;
+            timelineWrapper.current.scrollLeft = 0;
         }
     }, [videoIsEnd])
 
     useEffect(() => {
         setPreviewByLinePosition(lineCursorPosition);
+        setTime({
+            humanTime: secondsToTime(lineCursorPosition),
+            seconds: lineCursorPosition,
+        });
     }, [lineCursorPosition]);
 
     useEffect(() => {
@@ -112,18 +119,27 @@ const Timeline = ({
     };
 
     const secondsToTime = (secs) => {
-      const secInt = parseInt(secs);
-      const secFloat = Math.round((secs % 1) * 100).toString().padStart(2, '0');
-      const hours = Math.floor(secInt / (60 * 60)).toString().padStart(2, '0');
+        const secInt = parseInt(secs);
+        const secFloat = Math.round((secs % 1) * 100).toString().padStart(2, '0');
+        const hours = Math.floor(secInt / (60 * 60)).toString().padStart(2, '0');
 
-      const divisor_for_minutes = secInt % (60 * 60);
-      const minutes = Math.floor(divisor_for_minutes / 60).toString().padStart(2, '0');
+        const divisor_for_minutes = secInt % (60 * 60);
+        const minutes = Math.floor(divisor_for_minutes / 60).toString().padStart(2, '0');
 
-      const divisor_for_seconds = divisor_for_minutes % 60;
-      const seconds = Math.ceil(divisor_for_seconds).toString().padStart(2, '0');
+        const divisor_for_seconds = divisor_for_minutes % 60;
+        const seconds = Math.ceil(divisor_for_seconds).toString().padStart(2, '0');
 
-      return hours + ':' + minutes + ':' + seconds + ':' + secFloat;
+        return hours + ':' + minutes + ':' + seconds + ':' + secFloat;
     }
+
+    const handleScrollWrapper = (linePosition) => {
+        if (linePosition > 600) {
+            const firstDigit = parseInt(linePosition.toString()[0], 10);
+            if (firstDigit % 2 === 0) {
+                timelineWrapper.current.scrollLeft = timelineWrapper.current.scrollLeft + 200;
+            }
+        }
+    };
 
     const timelineWidth = (framesPerSecond * timelineSeconds) * (timelineZoom / 100);
     return (
@@ -177,6 +193,7 @@ const Timeline = ({
           </div>
 
           <div
+            ref={timelineWrapper}
             style={{
               height: 'calc(100% - 4rem)',
               display: showTimeline ? 'block' : 'none',
@@ -196,6 +213,7 @@ const Timeline = ({
                   clickedFrame={clickedFrame}
                   showTimeline={showTimeline}
                   time={time}
+                  handleScrollWrapper={handleScrollWrapper}
               />
               <div
                   className="bg-gray-200 h-6 rounded-lg flex justify-between"

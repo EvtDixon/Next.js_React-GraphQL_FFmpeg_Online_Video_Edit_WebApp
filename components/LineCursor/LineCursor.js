@@ -11,6 +11,7 @@ const LineCursor = ({
     clickedFrame,
     showTimeline,
     time,
+    handleScrollWrapper,
 }) => {
     const [lineStyle, setLineStyle] = useState({
         width: '15px',
@@ -50,11 +51,12 @@ const LineCursor = ({
                 transition: videoPlayer.current ? `transform ${videoPlayer.current.duration - videoPlayer.current.currentTime}s linear 0s` : '',
             });
         }
-    }, [playing]);
+    }, [playing, zoom]);
 
     useEffect(() => {
         if (line !== null) {
             const interval = setInterval(() => {
+                handleScrollWrapper(line.current.getBoundingClientRect().left - 80);
                 setLeftPosition(line.current.getBoundingClientRect().left - 80);
             }, 50);
             return (() => {
