@@ -51,12 +51,12 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
     }, [imagePreviewId, playing]);
 
     useEffect(() => {
-        const currentTime = 1000 / framesPerSecond * imagePreviewId;
+        const currentTime = (1000 / framesPerSecond) * ((imagePreviewId || 1) - 1);
         const date = new Date(currentTime);
         date.setHours(currentTime / 1000 / 60 / 60);
 
         const shortTime = date.toTimeString().slice(0, 8);
-        const ms = `0${date.getMilliseconds()}`.slice(-2);
+        const ms = `${date.getMilliseconds()}`.padStart(3, '0').slice(0, 2);
         const timeString = `${shortTime}:${ms}`;
         setTimeString(timeString);
     }, [imagePreviewId]);
