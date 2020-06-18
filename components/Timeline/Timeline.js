@@ -2,13 +2,16 @@ import { useState, useEffect, Fragment } from 'react'
 
 import LineCursor from '../LineCursor'
 import RenderVideoOnTimeline from '../RenderVideoOnTimeline'
+import ScaleBar from "../ScaleBar"
+import { defaultFrameSize } from "../../constants"
 
-const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, imagePreviewId, frameSize }) => {
+const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, imagePreviewId, frameSize, setFrameSize}) => {
     const [playing, setPlaying] = useState(false)
     const [framesPerSecond, setFramesPerSecond] = useState(frameSize)
     const [timelineSeconds, setTimelineSeconds] = useState(frameSize)
     const [lineCursorPosition, setLineCursorPosition] = useState(0)
     const [timeString, setTimeString] = useState("")
+    const [timelineZoom, setTimelineZoom] = useState(100)
 
     useEffect(() => {
         setPreviewByLinePosition(lineCursorPosition);
@@ -61,6 +64,12 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
         setTimeString(timeString);
     }, [imagePreviewId]);
 
+    useEffect(() => {
+        const newFrameSize = defaultFrameSize * timelineZoom / 100;
+        setFrameSize(newFrameSize);
+        setLineCursorPosition((imagePreviewId - 1) * newFrameSize);
+    }, [timelineZoom]);
+
     const timelineWidth = framesPerSecond * timelineSeconds // 60 (default) frames per second, multiplied by 360 (default) seconds.
 
     return (
@@ -72,7 +81,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
                 >
                     {playing ? 'pause' : 'play'}
                 </span>
-
+                <ScaleBar timelineZoom={timelineZoom} setTimelineZoom={setTimelineZoom} />
                 <span className="rounded-full bg-gray-300 text-gray-900 font-bold text-sm px-3 py-1">
                     {timeString}
                 </span>
@@ -103,7 +112,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
                 >
                     {videos.map((video) => (
                         <Fragment key={video.fileName}>
-                            <RenderVideoOnTimeline handleSetImagePreview={handleSetImagePreview} video={video} />
+                            <RenderVideoOnTimeline handleSetImagePreview={handleSetImagePreview} video={video} frameSize={frameSize} />
 
                             <span className="video-separator-marker"></span>
                         </Fragment>

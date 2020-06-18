@@ -2,13 +2,13 @@ import { useState } from 'react'
 import Canvas from '../components/Canvas'
 import Timeline from '../components/Timeline'
 import { getAllVideosQuery } from '../graphql/client/queries/videos'
-
-const frameSize = 120;
+import { defaultFrameSize } from "../constants"
 
 const Home = ({ videos }) => {
     const [timelineVideos, setTimelineVideos] = useState([]);
     const [imagePreview, setImagePreview] = useState('');
     const [imagePreviewId, setImagePreviewId] = useState(null);
+    const [frameSize, setFrameSize] = useState(defaultFrameSize)
 
     const addToTimeline = (video) => {
         if (
@@ -165,6 +165,7 @@ const Home = ({ videos }) => {
                     <div className="w-full bg-white h-full md:h-4/10 border-t border-gray-200 shadow">
                         <Timeline
                           frameSize={frameSize}
+                          setFrameSize={setFrameSize}
                           imagePreviewId={imagePreviewId}
                           handleSetImagePreview={handleSetImagePreview}
                           videos={timelineVideos}

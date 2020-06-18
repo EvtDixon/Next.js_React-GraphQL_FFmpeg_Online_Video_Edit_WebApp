@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 
-const RenderVideoOnTimeline = ({ video, handleSetImagePreview }) => {
+const RenderVideoOnTimeline = ({ video, handleSetImagePreview, frameSize }) => {
     const previewImages = Array(video.framesCount)
         .fill(0)
         .map((_, index) => `/${video.fileName}/frames_${index + 1}.png`)
@@ -12,7 +12,7 @@ const RenderVideoOnTimeline = ({ video, handleSetImagePreview }) => {
                     onClick={event => handleSetImagePreview(event, index + 1)}
                     key={previewImage}
                     src={previewImage}
-                    style={{ width: '120px', flexShrink: 0 }}
+                    style={{ width: frameSize, flexShrink: 0 }}
                     className="w-full border-r border-gray-200"
                 />
             ))}
