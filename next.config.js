@@ -1,7 +1,7 @@
-const config = require('./config')
+const config = require('./config');
 
 module.exports = () => ({
-    env: {
-        appUrl: config.url,
-    },
-})
+   env: {
+      appUrl: config.url,
+   },
+});
