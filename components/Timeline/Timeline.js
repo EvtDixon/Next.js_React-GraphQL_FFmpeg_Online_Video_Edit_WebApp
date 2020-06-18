@@ -1,4 +1,5 @@
 import { useState, useEffect, Fragment } from 'react'
+import { isEmpty } from 'lodash';
 
 import LineCursor from '../LineCursor'
 import RenderVideoOnTimeline from '../RenderVideoOnTimeline'
@@ -7,7 +8,6 @@ const timelineStep = 1;
 
 const Timeline = ({
     videos,
-    handleSetImagePreview,
     setPreviewByLinePosition,
     frameSize,
     setFrameSize,
@@ -15,12 +15,32 @@ const Timeline = ({
     duration,
     timelineVideos,
     videoPlayer,
+    videoIsEnd,
+    setVideoIsEnd,
+    toggleShowTimeline,
+    showTimeline,
 }) => {
     const [playing, setPlaying] = useState(false)
     const [framesPerSecond, setFramesPerSecond] = useState(24)
     const [timelineSeconds, setTimelineSeconds] = useState(360)
     const [lineCursorPosition, setLineCursorPosition] = useState(0)
     const [timelineZoom, setTimelineZoom] = useState(1000);
+    const [clickedFrame, setClickedFrame] = useState(0);
+    const [time, setTime] = useState({
+        humanTime: '',
+        seconds: '',
+    });
+
+    useEffect(() => {
+        if (videoIsEnd) {
+            setTime({
+                humanTime: secondsToTime(0),
+                seconds: 0,
+            });
+            setPlaying(false);
+            videoPlayer.current.currentTime = 0;
+        }
+    }, [videoIsEnd])
 
     useEffect(() => {
         setPreviewByLinePosition(lineCursorPosition);
@@ -40,6 +60,43 @@ const Timeline = ({
         }
     }, [timelineVideos, duration]);
 
+    useEffect(() => {
+        if (showTimeline) {
+            setPlaying(false);
+        }
+    }, [showTimeline]);
+
+    useEffect(() => {
+        if (playing) {
+            const interval = setInterval(() => {
+                const time = secondsToTime(videoPlayer.current.currentTime);
+                setTime({
+                    humanTime: time,
+                    seconds: videoPlayer.current.currentTime,
+                });
+            }, 50);
+            return (() => {
+                clearInterval(interval);
+            });
+        }
+    }, [videoPlayer, playing]);
+
+    const handleSetImagePreview = (event, index) => {
+        if (!playing) {
+            videoPlayer.current.currentTime = (index) / framesPerSecond;
+            setTime({
+                humanTime: secondsToTime((index - 1) / framesPerSecond),
+                seconds: (index - 1) / framesPerSecond,
+            });
+            setClickedFrame(index);
+        }
+    };
+
+    const handlePlaying = () => {
+        setPlaying(!playing);
+        setVideoIsEnd(false);
+    };
+
     const handleChangeZoom = (event) => {
         setTimelineZoom(event.target.value);
     };
@@ -54,19 +111,33 @@ const Timeline = ({
         return digits;
     };
 
+    const secondsToTime = (secs) => {
+      const secInt = parseInt(secs);
+      const secFloat = Math.round((secs % 1) * 100).toString().padStart(2, '0');
+      const hours = Math.floor(secInt / (60 * 60)).toString().padStart(2, '0');
+
+      const divisor_for_minutes = secInt % (60 * 60);
+      const minutes = Math.floor(divisor_for_minutes / 60).toString().padStart(2, '0');
+
+      const divisor_for_seconds = divisor_for_minutes % 60;
+      const seconds = Math.ceil(divisor_for_seconds).toString().padStart(2, '0');
+
+      return hours + ':' + minutes + ':' + seconds + ':' + secFloat;
+    }
+
     const timelineWidth = (framesPerSecond * timelineSeconds) * (timelineZoom / 100);
     return (
       <div className="w-full h-full">
           <div className="h-12 w-full border-b border-gray-200 flex justify-between items-center px-4">
                 <span
-                  onClick={() => setPlaying(!playing)}
+                  onClick={handlePlaying}
                   className="cursor-pointer text-brown-500 font-bold uppercase text-sm play-button"
                 >
                     {playing ? 'pause' : 'play'}
                 </span>
 
               <span className="rounded-full bg-gray-300 text-gray-900 font-bold text-sm px-3 py-1">
-                    00:00:00:00
+                  { isEmpty(time.humanTime) ? '00:00:00:00' : time.humanTime }
                 </span>
 
               <div
@@ -87,8 +158,11 @@ const Timeline = ({
                     }}
                   />
                   <svg
+                    onClick={toggleShowTimeline}
                     className="cursor-pointer"
-                    style={{ transform: 'rotate(180deg)' }}
+                    style={{
+                      transform: showTimeline ? 'rotate(180deg)' : 'rotate(0deg)'
+                    }}
                     stroke="currentColor"
                     fill="currentColor"
                     strokeWidth={0}
@@ -103,16 +177,25 @@ const Timeline = ({
           </div>
 
           <div
-            style={{ height: 'calc(100% - 4rem)' }}
+            style={{
+              height: 'calc(100% - 4rem)',
+              display: showTimeline ? 'block' : 'none',
+            }}
             className="relative w-full mt-4 overflow-scroll"
           >
               <LineCursor
-                timelineVideos={timelineVideos}
-                frameSize={frameSize}
-                position={lineCursorPosition}
-                setPosition={setLineCursorPosition}
-                videoPlayer={videoPlayer}
-                playing={playing}
+                  videoIsEnd={videoIsEnd}
+                  zoom={timelineZoom / 100}
+                  framesPerSecond={framesPerSecond}
+                  timelineVideos={timelineVideos}
+                  frameSize={frameSize}
+                  position={lineCursorPosition}
+                  setPosition={setLineCursorPosition}
+                  videoPlayer={videoPlayer}
+                  playing={playing}
+                  clickedFrame={clickedFrame}
+                  showTimeline={showTimeline}
+                  time={time}
               />
               <div
                   className="bg-gray-200 h-6 rounded-lg flex justify-between"
@@ -125,15 +208,17 @@ const Timeline = ({
                 style={{ width: timelineWidth }}
               >
                   {videos.map((video) => (
-                    <Fragment key={video.fileName}>
-                        <RenderVideoOnTimeline
-                          frameSize={(framesPerSecond * (timelineZoom / 100)) / framesPerSecond}
-                          handleSetImagePreview={handleSetImagePreview}
-                          video={video}
-                        />
+                      <Fragment key={video.fileName}>
+                          <RenderVideoOnTimeline
+                              framesPerSecond={framesPerSecond}
+                              videoPlayer={videoPlayer}
+                              frameSize={(framesPerSecond * (timelineZoom / 100)) / framesPerSecond}
+                              handleSetImagePreview={handleSetImagePreview}
+                              video={video}
+                          />
 
-                        <span className="video-separator-marker"></span>
-                    </Fragment>
+                          <span className="video-separator-marker"></span>
+                      </Fragment>
                   ))}
               </div>
           </div>

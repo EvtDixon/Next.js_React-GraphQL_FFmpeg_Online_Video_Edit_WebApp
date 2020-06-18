@@ -6,10 +6,11 @@ import { isEmpty } from 'lodash';
 
 const Home = ({ videos }) => {
     const [timelineVideos, setTimelineVideos] = useState([]);
-    const [imagePreview, setImagePreview] = useState('');
     const [imagePreviewId, setImagePreviewId] = useState(null);
     const [frameSize, setFrameSize] = useState(60);
     const [duration, setDuration] = useState(0);
+    const [videoIsEnd, setVideoIsEnd] = useState(true);
+    const [showTimeline, setShowTimeline] = useState(true);
     const videoPlayer = useRef(undefined);
 
     const addToTimeline = (video) => {
@@ -22,24 +23,12 @@ const Home = ({ videos }) => {
             return
         }
 
-        setFirstScene(video);
         setTimelineVideos([...timelineVideos, video]);
     }
 
-    const setFirstScene = (video) => {
-        setImagePreview(`/frames/${video.fileName}/preview-1.png`);
-    };
-
-    const handleSetImagePreview = (event, index) => {
-        setImagePreviewId(index);
-        setImagePreview(`/frames/${timelineVideos[0].fileName}/preview-${index}.png`);
-    };
-
     const setPreviewByLinePosition = (position) => {
-        if (!isEmpty(timelineVideos)) {
-            const index = Math.floor(position / frameSize) + 1;
-            setImagePreviewId(index);
-            setImagePreview(`/frames/${timelineVideos[0].fileName}/preview-${index}.png`);
+        if (videoPlayer.current) {
+            videoPlayer.current.currentTime = position;
         }
     };
 
@@ -51,6 +40,10 @@ const Home = ({ videos }) => {
                 videoPlayer.current.pause();
             }
         }
+    };
+
+    const toggleShowTimeline = () => {
+        setShowTimeline(!showTimeline);
     };
 
     return (
@@ -152,10 +145,14 @@ const Home = ({ videos }) => {
                 </div>
 
                 <div
-                    className="flex-grow bg-gray-100"
+                    className="flex-grow bg-gray-100 flex flex-col"
                     style={{ width: 'calc(100% - 5rem)' }}
                 >
-                    <div className="flex flex-wrap w-full h-auto md:h-6/10">
+                    <div className="flex flex-wrap w-full h-auto md:h-6/10"
+                        style={{
+                            flex: 1
+                        }}
+                    >
                         <div className="w-full md:w-2/12 h-full px-5 py-6 bg-white border-r border-gray-200 overflow-scroll">
                             {videos.map((video) => (
                                 <img
@@ -169,24 +166,37 @@ const Home = ({ videos }) => {
                         </div>
 
                         <div className="w-full md:w-8/12 px-5 py-12">
-                            <Canvas videoPlayer={videoPlayer} setDuration={setDuration} preview={timelineVideos} />
+                            <Canvas
+                              showTimeline={showTimeline}
+                              setVideoIsEnd={setVideoIsEnd}
+                              videoPlayer={videoPlayer}
+                              setDuration={setDuration}
+                              preview={timelineVideos}
+                            />
                         </div>
 
                         <div className="w-full md:w-2/12 px-5 py-12 bg-white border-l border-gray-200"></div>
                     </div>
 
-                    <div className="w-full bg-white h-full md:h-4/10 border-t border-gray-200 shadow">
+                    <div className="w-full bg-white border-t border-gray-200 shadow"
+                         style={{
+                             flex: showTimeline ? 1 : 0
+                         }}
+                    >
                         <Timeline
+                          setVideoIsEnd={setVideoIsEnd}
+                          videoIsEnd={videoIsEnd}
                           duration={duration}
                           videoPlayer={videoPlayer}
                           frameSize={frameSize}
                           imagePreviewId={imagePreviewId}
-                          handleSetImagePreview={handleSetImagePreview}
                           videos={timelineVideos}
                           setPreviewByLinePosition={setPreviewByLinePosition}
                           setFrameSize={setFrameSize}
                           togglePlayVideo={togglePlayVideo}
                           timelineVideos={timelineVideos}
+                          toggleShowTimeline={toggleShowTimeline}
+                          showTimeline={showTimeline}
                         />
                     </div>
                 </div>

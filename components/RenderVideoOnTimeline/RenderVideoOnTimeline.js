@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 
-const RenderVideoOnTimeline = ({ video, handleSetImagePreview, frameSize }) => {
+const RenderVideoOnTimeline = ({ video, handleSetImagePreview, frameSize, videoPlayer, framesPerSecond }) => {
     const previewImages = Array(video.framesCount)
         .fill(0)
         .map((_, index) => `/frames/${video.fileName}/preview-${index + 1}.png`)
@@ -15,12 +15,17 @@ const RenderVideoOnTimeline = ({ video, handleSetImagePreview, frameSize }) => {
                   {
                       (index + 1) % 10 === 0 && <span style={timeLabels}>{(index + 1) / 10}s</span>
                   }
-                  <img
-                    onClick={event => handleSetImagePreview(event, index + 1)}
-                    src={previewImage}
-                    style={{ width: frameSize, flexShrink: 0, height: '100%' }}
-                    className="w-full border-r border-gray-200"
-                  />
+                  {
+                      index < (videoPlayer.current.duration * framesPerSecond)
+                      && (
+                        <img
+                          onClick={event => handleSetImagePreview(event, index + 1)}
+                          src={previewImage}
+                          style={{ width: frameSize, flexShrink: 0, height: '100%', cursor: 'pointer' }}
+                          className="w-full border-r border-gray-200"
+                        />
+                      )
+                  }
               </div>
             ))}
         </Fragment>
