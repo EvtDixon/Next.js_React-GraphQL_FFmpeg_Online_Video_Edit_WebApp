@@ -4,7 +4,7 @@ import Canvas from "../components/Canvas"
 import Timeline from "../components/Timeline"
 import { getAllVideosQuery } from "../graphql/client/queries/videos"
 
-const frameSize = 120
+const frameSize = 70
 
 const Home = ({ videos }) => {
   const [timelineVideos, setTimelineVideos] = useState([])
@@ -17,6 +17,12 @@ const Home = ({ videos }) => {
         (timelineVideo) => timelineVideo.fileName === video.fileName
       )
     ) {
+      setFirstScene(
+        timelineVideos.find(
+          (timelineVideo) => timelineVideo.fileName === video.fileName
+        )
+      )
+
       return
     }
 
@@ -35,7 +41,7 @@ const Home = ({ videos }) => {
 
   const setPreviewByLinePosition = (position) => {
     if (timelineVideos[0]) {
-      const index = Math.floor(position / frameSize) + 1
+      const index = Math.floor(position / timelineVideos[0].framesCount) + 1
       setImagePreview(`/${timelineVideos[0].fileName}/frames_${index}.png`)
     }
   }

@@ -25,6 +25,29 @@ const Timeline = ({
 
   const timelineWidth = framesPerSecond * timelineSeconds // 60 (default) frames per second, multiplied by 360 (default) seconds.
 
+  useEffect(() => {
+    let interval = null
+
+    if (lineCursorPosition >= timelineWidth) {
+      setLineCursorPosition(0)
+      setPlaying(false)
+    }
+
+    if (playing) {
+      interval = setInterval(() => {
+        setLineCursorPosition((cursor) => cursor + 100)
+      }, 100)
+    } else if (!playing && lineCursorPosition !== 0) {
+      clearInterval(interval)
+    }
+
+    return () => clearInterval(interval)
+  }, [playing, lineCursorPosition])
+
+  const getTime = () => {
+    return `00:00:00`
+  }
+
   return (
     <div className="w-full h-full">
       <div className="h-12 w-full border-b border-gray-200 flex justify-between items-center px-4">
@@ -36,7 +59,7 @@ const Timeline = ({
         </span>
 
         <span className="rounded-full bg-gray-300 text-gray-900 font-bold text-sm px-3 py-1">
-          00:00:00:00
+          {getTime()}
         </span>
 
         <svg
