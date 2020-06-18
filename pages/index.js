@@ -34,7 +34,8 @@ const Home = ({ videos }) => {
 
     const setPreviewByLinePosition = (position) => {
         if (timelineVideos[0]) {
-            const index = Math.floor(position / frameSize) + 1;
+            const previewPosition = position; 
+            const index = Math.floor((previewPosition >= 0 ? previewPosition : 0 ) / frameSize) + 1;
             setImagePreview(`/${timelineVideos[0].fileName}/frames_${index}.png`);
         }
     };

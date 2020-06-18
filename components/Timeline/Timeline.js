@@ -15,7 +15,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
     }, [lineCursorPosition]);
 
     useEffect(() => {
-        setLineCursorPosition(imagePreviewId * frameSize);
+        setLineCursorPosition((imagePreviewId - 1) * frameSize);
     }, [imagePreviewId]);
 
     const framesCount = videos.length && videos[0].framesCount;
