@@ -23,6 +23,7 @@ const LineCursor = ({
 
     useEffect(() => {
         if (videoIsEnd) {
+            setLeftPosition(0);
             setTranslate(0);
         }
     }, [videoIsEnd]);
@@ -37,6 +38,7 @@ const LineCursor = ({
             setLineStyle({
                 width: '15px',
                 zIndex: 1,
+                transition: 'none',
             });
         } else {
             const defaultStyle = {
