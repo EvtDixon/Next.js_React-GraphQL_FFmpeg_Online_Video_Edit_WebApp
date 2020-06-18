@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react"
 
 import LineCursor from "../LineCursor"
 import RenderVideoOnTimeline from "../RenderVideoOnTimeline"
+import Timer from "../Timer"
 
 const Timeline = ({
   videos,
@@ -44,10 +45,6 @@ const Timeline = ({
     return () => clearInterval(interval)
   }, [playing, lineCursorPosition])
 
-  const getTime = () => {
-    return `00:00:00`
-  }
-
   return (
     <div className="w-full h-full">
       <div className="h-12 w-full border-b border-gray-200 flex justify-between items-center px-4">
@@ -58,9 +55,7 @@ const Timeline = ({
           {playing ? "pause" : "play"}
         </span>
 
-        <span className="rounded-full bg-gray-300 text-gray-900 font-bold text-sm px-3 py-1">
-          {getTime()}
-        </span>
+        <Timer lineCursorPosition={lineCursorPosition} />
 
         <svg
           className="cursor-pointer"
