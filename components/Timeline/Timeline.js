@@ -8,6 +8,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
     const [framesPerSecond, setFramesPerSecond] = useState(frameSize)
     const [timelineSeconds, setTimelineSeconds] = useState(frameSize)
     const [lineCursorPosition, setLineCursorPosition] = useState(0)
+    const [timeString, setTimeString] = useState("")
 
     useEffect(() => {
         setPreviewByLinePosition(lineCursorPosition);
@@ -48,6 +49,17 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
         }
     }, [imagePreviewId, playing]);
 
+    useEffect(() => {
+        const currentTime = 1000 / framesPerSecond * imagePreviewId;
+        const date = new Date(currentTime);
+        date.setHours(currentTime / 1000 / 60 / 60);
+
+        const shortTime = date.toTimeString().slice(0, 8);
+        const ms = `0${date.getMilliseconds()}`.slice(-2);
+        const timeString = `${shortTime}:${ms}`;
+        setTimeString(timeString);
+    }, [imagePreviewId]);
+
     const timelineWidth = framesPerSecond * timelineSeconds // 60 (default) frames per second, multiplied by 360 (default) seconds.
 
     return (
@@ -61,7 +73,7 @@ const Timeline = ({ videos, handleSetImagePreview, setPreviewByLinePosition, ima
                 </span>
 
                 <span className="rounded-full bg-gray-300 text-gray-900 font-bold text-sm px-3 py-1">
-                    00:00:00:00
+                    {timeString}
                 </span>
 
                 <svg
