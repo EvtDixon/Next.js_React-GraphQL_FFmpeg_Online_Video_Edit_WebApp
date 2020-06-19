@@ -3,7 +3,7 @@ import NextApp from 'next/app';
 import React, { Fragment } from 'react';
 import { withUrqlClient } from 'next-urql';
 import '../css/index.min.css';
-
+import '../css/text.css';
 class Application extends NextApp {
    render() {
       const { Component, pageProps } = this.props;

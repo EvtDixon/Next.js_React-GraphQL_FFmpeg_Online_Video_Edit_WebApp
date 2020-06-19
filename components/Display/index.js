@@ -10,6 +10,7 @@ const Canvas = ({ width = '1280', height = '720', preview }) => {
          }}
          className='rounded-lg shadow-lg bg-white h-full mx-auto'
       >
+         {/* klsdjlad */}
          <img src={preview} />
       </div>
    );

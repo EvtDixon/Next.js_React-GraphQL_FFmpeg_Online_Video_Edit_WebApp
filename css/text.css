@@ -1,0 +1,30 @@
+.addText {
+   padding: 7px;
+   width: 140px;
+   background-color: #bfbfbf;
+   border: solid 1px #a3a3a3;
+   border-radius: 30px;
+   cursor: pointer;
+   text-align: center;
+   color: white;
+   margin: auto;
+   font-size: 20px;
+}
+.addText:hover {
+   background-color: #a3a3a3;
+   border: solid 1px #8a8a8a;
+}
+.text {
+   border: solid 2px #fff;
+   margin-top: 15px;
+   text-align: center;
+   font-size: 20px;
+   color: #363636;
+   cursor: pointer;
+   padding: 10px;
+}
+
+.text:hover {
+   border-color: #7dada9;
+   border-radius: 7px;
+}

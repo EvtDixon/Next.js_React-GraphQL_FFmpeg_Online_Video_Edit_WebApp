@@ -3,6 +3,10 @@ const Path = require('path');
 const RimRaf = require('rimraf');
 const extractFrames = require('ffmpeg-extract-frames');
 
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
+
 const getAllVideos = () =>
    Fs.readdirSync(Path.resolve(__dirname, 'videos')).filter(
       (file) => file.substr(-3) === 'mp4'

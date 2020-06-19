@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import Display from '../components/Display';
 import Timeline from '../components/TimeLine';
 import { videosQuery } from '../graphql/client/data/videos';
+import Display from '../components/Display';
+
+import Video from '../components/secondView/video';
+import Text from '../components/secondView/text';
 
 const frameSize = 120;
 
@@ -9,6 +12,7 @@ const Main = ({ videos }) => {
    const [videoState, setVideoState] = useState([]);
    const [frame, setFrame] = useState('');
    const [frameId, setFrameId] = useState(null);
+   const [port, setPort] = useState('Video');
 
    const videoChangehandler = (video) => {
       if (!videoState.find((myVideo) => myVideo.fileName === video.fileName)) {
@@ -29,11 +33,18 @@ const Main = ({ videos }) => {
       }
    };
 
+   const portChangeHandler = (port) => {
+      setPort(port);
+   };
+
    return (
       <React.Fragment>
          <div className='font-sans w-full h-screen flex'>
             <div className='w-20 hidden md:block h-full bg-white border-r border-gray-200 shadow'>
-               <div className='w-full flex flex-col items-center justify-center py-3 text-gray-700 hover:text-blue-500 font-bold cursor-pointer mt-12'>
+               <div
+                  className='w-full flex flex-col items-center justify-center py-3 text-gray-700 hover:text-blue-500 font-bold cursor-pointer mt-12'
+                  onClick={() => portChangeHandler('Video')}
+               >
                   <svg
                      stroke='currentColor'
                      fill='none'
@@ -49,7 +60,10 @@ const Main = ({ videos }) => {
                   </svg>
                   <span className='text-sm'>Videos</span>
                </div>
-               <div className='w-full flex flex-col items-center justify-center py-3 text-gray-700 hover:text-blue-500 font-bold cursor-pointer mt-12'>
+               <div
+                  className='w-full flex flex-col items-center justify-center py-3 text-gray-700 hover:text-blue-500 font-bold cursor-pointer mt-12'
+                  onClick={() => portChangeHandler('Images')}
+               >
                   <svg
                      stroke='currentColor'
                      fill='none'
@@ -65,7 +79,10 @@ const Main = ({ videos }) => {
                   </svg>
                   <span className='text-sm'>Images</span>
                </div>
-               <div className='w-full flex flex-col items-center justify-center py-3 text-gray-700 hover:text-blue-500 font-bold cursor-pointer mt-12'>
+               <div
+                  className='w-full flex flex-col items-center justify-center py-3 text-gray-700 hover:text-blue-500 font-bold cursor-pointer mt-12'
+                  onClick={() => portChangeHandler('Texts')}
+               >
                   <svg
                      stroke='currentColor'
                      fill='none'
@@ -81,7 +98,10 @@ const Main = ({ videos }) => {
                   </svg>
                   <span className='text-sm'>Texts</span>
                </div>
-               <div className='w-full flex flex-col items-center justify-center py-3 text-gray-700 hover:text-blue-500 font-bold cursor-pointer mt-12'>
+               <div
+                  className='w-full flex flex-col items-center justify-center py-3 text-gray-700 hover:text-blue-500 font-bold cursor-pointer mt-12'
+                  onClick={() => portChangeHandler('Templates')}
+               >
                   <svg
                      stroke='currentColor'
                      fill='none'
@@ -98,21 +118,20 @@ const Main = ({ videos }) => {
                   <span className='text-sm'>Templates</span>
                </div>
             </div>
+
             <div
                className='flex-grow bg-gray-100'
                style={{ width: 'calc(100% - 5rem)' }}
             >
                <div className='flex flex-wrap w-full h-auto md:h-6/10'>
                   <div className='w-full md:w-2/12 h-full px-5 py-6 bg-white border-r border-gray-200 overflow-scroll'>
-                     {videos.map((video) => (
-                        <img
-                           onClick={() => videoChangehandler(video)}
-                           key={video.fileName}
-                           alt={video.fileName}
-                           src={`/${video.fileName}/frames_1.png`}
-                           className='w-full cursor-pointer rounded-lg shadow mt-5'
-                        />
-                     ))}
+                     {port === 'Video' ? (
+                        <Video props={{ videoChangehandler, videos }} />
+                     ) : port === 'Texts' ? (
+                        <Text />
+                     ) : (
+                        console.log('sda')
+                     )}
                   </div>
 
                   <div className='w-full md:w-8/12 px-5 py-12'>
